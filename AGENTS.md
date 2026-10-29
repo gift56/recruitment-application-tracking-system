@@ -1,224 +1,46 @@
-# AGENTS.md
+# Project Guidelines
 
-You are a **principal-level full-stack engineer and AI implementation agent** working on a **Python Django Recruitment and Application Tracking System**, built with **Python 3.12**, **Django 6**, **SQLite / PostgreSQL**, and **Tailwind CSS / Bootstrap**.
+## Project status and scope
 
-Your job is to understand the request, use the right project skills, create a clear implementation prompt in `prompts/`, ask for approval, then implement strictly after confirmation.
+- This is a Django recruitment-tracking project. `README.md` is the source of truth for implemented capabilities and the roadmap; do not describe planned features as available.
+- The current verified stack is Python 3.12+, Django 6.1.2, `uv`, and SQLite. There is no dependency manifest or frontend build pipeline yet.
+- The `tracker` app has recruitment models, admin configuration, tests, a public job board and candidate application flow, and a home page served at `/` and `/tracker/`. The root route uses the `tracker` namespace; the `/tracker/` mount uses `tracker_app` to avoid duplicate namespace ambiguity.
+- Recruiter dashboards and account routes remain unimplemented. Do not redirect to or link to those destinations until their endpoints exist.
+- Implement only the feature requested. Do not add authentication, APIs, routes, dependencies, or production infrastructure as incidental work.
 
-# This is NOT your standard legacy Django setup
+## Workflow
 
-This project enforces clean architecture, separation of concerns, and modern Django patterns. Heed deprecation notices and adhere strictly to these rules:
+1. Read this file, the relevant prompt in `prompts/`, and the code that the change will touch.
+2. Read applicable skills named by the user and any clearly relevant skills available in the workspace. Do not invent skills or assume a skill exists at a path that is not present.
+3. Before implementing a feature, create or update its detailed prompt in `prompts/` and ask the user to approve it. Do not implement application code until approval; after approval, reread and follow the approved prompt.
+4. Ask a focused question only when a material product or implementation decision cannot be resolved from the request and repository.
+5. Keep changes scoped, preserve existing behavior, update directly related documentation, and report checks and exact manual verification steps.
 
-* Class-Based Views (CBVs) or clean modular Function-Based Views (FBVs) with explicit form validation.
-* Database queries must optimize database lookups using `select_related` and `prefetch_related` to avoid N+1 query problems.
-* All forms must leverage Django's built-in `forms.ModelForm` with proper CSRF protection and crispy/tailored widget rendering.
-* Static assets and templates must follow structured namespacing (`templates/tracker/`).
+Prompts should describe the goal, applicable skills, inspected code, decisions, likely files, requirements, relevant security concerns, acceptance criteria, checks, and exact manual test steps. For UI work, also specify layout, typography, color/status use, accessibility, responsiveness, and template organization.
+When a feature adds or changes routes or user-visible capabilities, update this file to keep the project status and constraints accurate, and update `README.md` after implementation so it distinguishes delivered behavior from planned work. While a feature is awaiting approval, label it as planned rather than implemented.
 
----
+## Django and repository conventions
 
-# 1. Product
+- Keep data, input validation, request handling, and presentation in their appropriate Django layers. Use explicit `ModelForm.Meta.fields` or `exclude` when forms are added.
+- Use Django ORM and optimize related-object access with `select_related` or `prefetch_related` when the query shape warrants it. Do not use raw unparameterized SQL.
+- Preserve existing model constraints and resume validation: PDF/DOCX only, maximum 5 MiB, and document-content validation. Do not weaken validation or expose uploaded resumes.
+- Templates discovered through the app should be organized under `tracker/templates/tracker/`; keep shared layout and reusable partials namespaced there (for example `tracker/base.html` and `tracker/partials/`). Use `APP_DIRS` as currently configured; change template settings only when necessary.
+- Use the project's existing styling/build setup when one exists. If introducing a new asset mechanism is necessary, keep it within the approved prompt and avoid adding dependencies without approval.
+- UI must use semantic HTML, keyboard-accessible controls, visible focus states, responsive layouts, and Django's normal escaping. Do not mark user-controlled content safe.
+- Do not add or imply working navigation, account, logout, or policy destinations unless corresponding URL patterns exist. Do not add unrelated routes to make a presentation-only template appear functional.
+- Use Django's CSRF protection for any state-changing forms. Restricted views must enforce authentication and authorization appropriate to the feature.
+- Keep secrets out of source control. `DJANGO_SECRET_KEY` is required through the project-root `.env` or process environment; never inspect, quote, or commit `.env` values.
 
-The **Recruitment and Application Tracking System** is a robust web application for managing job postings, candidate applications, interview stages, and recruiter workflows.
+## Current setup and checks
 
-Build only:
+Use `uv run` from the repository root. The local environment needs a project-root `.env` with a private `DJANGO_SECRET_KEY`; see `.env.example` and `README.md` for setup. Current settings use SQLite and `DEBUG = True`; do not claim the project is production-ready or that `DJANGO_DEBUG`/`DATABASE_URL` are wired into settings.
 
-* **Authentication & Role System:** Recruiters, Hiring Managers, and Candidates with role-based dashboard redirection.
-* **Job Postings Module:** CRUD operations for job openings, requirements, departments, and active statuses.
-* **Candidate Application Tracking Pipeline:** Kanban-style or status-driven stage tracking (Applied -> Screening -> Interview -> Offer -> Hired/Rejected).
-* **Document & Resume Upload Management:** Secure media handling for candidate resumes and portfolio links.
-* **Dashboard & Analytics HUD:** Real-time summary metrics (total applicants, active listings, interview conversion rates).
+Run the smallest relevant checks, then the project checks for Django changes:
 
-Do not overbuild.
+```shell
+uv run python manage.py check
+uv run python manage.py makemigrations --check
+uv run python manage.py test tracker
+```
 
----
-
-# 2. Workflow
-
-For every implementation request:
-
-1. Read `AGENTS.md`.
-2. Read the skills explicitly mentioned by the user.
-3. Read clearly needed supporting skills from the approved skill list.
-4. Inspect relevant code.
-5. Ask a focused question only if the task has meaningful ambiguity.
-6. Create a detailed prompt file in `prompts/`.
-7. Ask: `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?`
-8. On Approval, re-read the approved prompt file in `prompts/` folder and implement it strictly only after user approval.
-9. Run available checks (`python manage.py check`, `python manage.py test`, migration dry-runs).
-10. Share exact steps to test or run the completed feature.
-
-Do not code before creating the prompt unless the user explicitly says to skip prompt creation.
-
----
-
-# 3. Skills
-
-Use only these skills:
-
-* `.agents/skills/architect`
-* `.agents/skills/django-models`
-* `.agents/skills/django-forms`
-* `.agents/skills/django-views`
-* `.agents/skills/tailwind`
-* `.agents/skills/recover`
-* `.agents/skills/remember`
-* `.agents/skills/review`
-
-Use them for:
-
-* `.agents/skills/architect`: Project app structure, URL routing design, service layer extraction.
-* `.agents/skills/django-models`: Database schema design, `ForeignKey`/`ManyToManyField` optimization, custom managers, and model methods.
-* `.agents/skills/django-forms`: ModelForms, validation clean methods, file upload constraints.
-* `.agents/skills/django-views`: CBVs, mixins for permission checking (`LoginRequiredMixin`, `UserPassesTestMixin`).
-* `.agents/skills/tailwind`: Clean UI presentation, responsive tables, badge components for application statuses.
-* `.agents/skills/recover`: Database migration error recovery and rollback techniques.
-* `.agents/skills/remember`: Context management across multi-model feature sprints.
-* `.agents/skills/review`: Code review against security (CSRF, SQL injection prevention) and performance standards.
-
-Do not invent new skills.
-
----
-
-# 4. Prompt files
-
-Prompt files live in the `prompts/` directory. Use names like:
-
-* `prompts/models-schema-setup.md`
-* `prompts/candidate-application-forms.md`
-* `prompts/recruiter-dashboard-views.md`
-* `prompts/pipeline-kanban-ui.md`
-
-Each prompt must include:
-
-* goal
-* skills read
-* existing code inspected
-* decisions or assumptions
-* files likely to change
-* implementation requirements
-* security requirements (permission enforcement, file extension validation, CSRF protection)
-* acceptance criteria
-* checks to run
-* exact manual test steps expected after implementation
-
-For UI tasks, also include layout, typography, status color coding (e.g., green for Hired, yellow for Interviewing, red for Rejected), responsiveness, and clean template organization.
-
----
-
-# 5. Architecture
-
-Keep these layers separate:
-
-* **Models (`models.py`):** Core data schemas (`Job`, `Candidate`, `Application`, `InterviewStage`, `Note`).
-* **Forms (`forms.py`):** Data entry and validation rules isolating input logic from views.
-* **Views (`views.py`):** Request handling logic, leveraging Django generic CBVs where applicable.
-* **Templates (`templates/`):** Modular HTML templates extending a shared `base.html` layout.
-* **Media Storage:** Configured handling for resume documents under `MEDIA_ROOT`.
-
-### Design System / Layout Organization
-
-Templates must not be monolithic blocks. Break UI pieces into modular components:
-
-* `templates/base.html` — global shell with navbar and Tailwind CDN / asset hooks
-* `templates/tracker/partials/` — reusable components (e.g., status badges, application cards, pagination)
-* `templates/tracker/` — feature page templates extending base
-
----
-
-# 6. Tech Stack
-
-Use:
-
-* Python 3.12+
-* Django 6.x
-* SQLite (Development) / PostgreSQL (Production ready)
-* Tailwind CSS (via CDN or compiled static)
-* Django Crispy Forms / Custom widget styling
-* Lucide or FontAwesome Icons
-
-Do not use:
-
-* Raw unparameterized SQL queries
-* Unsecured file uploads without mime-type validation
-
----
-
-# 7. Security & Data Rules
-
-* **Authentication Enforcement:** Restricted views must enforce login and role validation.
-* **File Upload Security:** Resumes uploaded must be restricted to safe extensions (`.pdf`, `.docx`) and size limits.
-* **Mass Assignment Protection:** Forms must explicitly use `fields = [...]` or `exclude = [...]` in `Meta`.
-* **Secret Protection:** `SECRET_KEY` and database credentials must load exclusively from environment variables via `python-decouple` or `os.environ`.
-
----
-
-# 8. Environment Variables
-
-| Variable | Purpose | Exposure |
-| --- | --- | --- |
-| `DJANGO_SECRET_KEY` | Cryptographic signing key | server-only |
-| `DJANGO_DEBUG` | Toggle debug mode (`True`/`False`) | server-only |
-| `DATABASE_URL` | Optional production DB string | server-only |
-
----
-
-# 9. Commands and Checks
-
-"Run available checks" means running these from the project root and reporting the results:
-
-* `python manage.py check` — System checks for configuration errors
-* `python manage.py makemigrations --check` — Ensure all models have sync'd migrations
-* `python manage.py test` — Run unit and integration tests
-
-Development:
-
-* `python manage.py runserver` — start Django development server
-
-After implementation, run system checks and migrations check at minimum. Report exact command outputs.
-
----
-
----
-
-# Step-by-Step Implementation Guide
-
-To build this Recruitment and Application Tracking System smoothly without getting overwhelmed, follow this structured roadmap, step by step:
-
-### Step 1: Database Schema & Models Design (`tracker/models.py`)
-
-Define your core data relationships. Based on a solid recruitment system, you will need:
-
-1. **`Department`**: Name, description.
-2. **`JobPosting`**: Title, department, description, requirements, location, salary range, created_at, is_active.
-3. **`Candidate`** (extends or links to Django's `User` or standalone profile): Full name, email, phone, resume (FileField), portfolio_url.
-4. **`Application`**: Links `Candidate` to `JobPosting`, current stage (Applied, Screening, Interview, Offer, Hired, Rejected), applied_date, cover_letter.
-5. **`InterviewNote`**: Links to `Application`, interviewer, notes text, score/rating, timestamp.
-
-*Action:* Write the models, run `uv run python manage.py makemigrations`, and `uv run python manage.py migrate`.
-
-### Step 2: Django Admin Configuration (`tracker/admin.py`)
-
-Before building custom frontend views, register your models in Django Admin. This gives you an instant, secure back-office dashboard to seed test jobs, mock candidates, and test database behavior instantly.
-
-### Step 3: Public Job Board & Listing Views (`tracker/views.py` & Templates)
-
-1. Build a list view (`ListView`) showing all active `JobPosting` objects.
-2. Build a detail view (`DetailView`) showing job specs with an "Apply Now" button.
-3. Create the `base.html` template layout styled with Tailwind CSS.
-
-### Step 4: Application Submission Form & File Handling (`tracker/forms.py`)
-
-1. Create a `ModelForm` for the `Application` and candidate details.
-2. Add validation to ensure uploaded files are valid document types (`.pdf`, `.docx`).
-3. Handle the view logic to safely save the candidate profile and link it to the job application.
-
-### Step 5: Recruiter Dashboard & Pipeline Management
-
-1. Build a recruiter-facing dashboard view showing summary cards (Total Jobs, Total Applications, Hired count).
-2. Build an application status-tracking view where recruiters can update an applicant's stage (e.g., move from *Screening* to *Interview*).
-3. Add filtering options so recruiters can filter applications by job title or stage.
-
-### Step 6: Polish, Testing, and Final Review
-
-1. Test form error states (e.g., submitting empty fields or invalid file types).
-2. Ensure mobile responsiveness using Tailwind utility classes.
-3. Run final checks (`python manage.py check`) and prepare your code presentation for your course review.
+Run migrations only when schema changes require them. Report commands that were not run and why. For documentation-only changes, validate claims against the repository; Django checks are not required.

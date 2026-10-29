@@ -1,0 +1,55 @@
+{% for message in messages %}
+  {% if "success" in message.tags %}
+    <div data-alert class="mb-3 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900 shadow-sm" role="status" aria-live="polite" aria-atomic="true">
+      <svg aria-hidden="true" focusable="false" class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none">
+        <path d="m5 12.5 4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      <p class="min-w-0 flex-1 text-sm font-medium">{{ message }}</p>
+      <button type="button" data-dismiss-alert class="-mr-1 -mt-1 rounded-md p-1 text-emerald-700 transition hover:bg-emerald-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" aria-label="Dismiss notification">
+        <svg aria-hidden="true" focusable="false" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+          <path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  {% elif "error" in message.tags %}
+    <div data-alert class="mb-3 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-900 shadow-sm" role="alert" aria-live="assertive" aria-atomic="true">
+      <svg aria-hidden="true" focusable="false" class="mt-0.5 h-5 w-5 shrink-0 text-rose-600" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 8v5m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <p class="min-w-0 flex-1 text-sm font-medium">{{ message }}</p>
+      <button type="button" data-dismiss-alert class="-mr-1 -mt-1 rounded-md p-1 text-rose-700 transition hover:bg-rose-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700" aria-label="Dismiss notification">
+        <svg aria-hidden="true" focusable="false" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+          <path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  {% elif "warning" in message.tags %}
+    <div data-alert class="mb-3 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 shadow-sm" role="status" aria-live="polite" aria-atomic="true">
+      <svg aria-hidden="true" focusable="false" class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" viewBox="0 0 24 24" fill="none">
+        <path d="M10.3 4.8 2.9 18a1.5 1.5 0 0 0 1.3 2.2h15.6a1.5 1.5 0 0 0 1.3-2.2L13.7 4.8a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M12 9v4m0 3h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <p class="min-w-0 flex-1 text-sm font-medium">{{ message }}</p>
+      <button type="button" data-dismiss-alert class="-mr-1 -mt-1 rounded-md p-1 text-amber-700 transition hover:bg-amber-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700" aria-label="Dismiss notification">
+        <svg aria-hidden="true" focusable="false" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+          <path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  {% else %}
+    <div data-alert class="mb-3 flex items-start gap-3 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sky-900 shadow-sm" role="status" aria-live="polite" aria-atomic="true">
+      <svg aria-hidden="true" focusable="false" class="mt-0.5 h-5 w-5 shrink-0 text-sky-600" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <p class="min-w-0 flex-1 text-sm font-medium">{{ message }}</p>
+      <button type="button" data-dismiss-alert class="-mr-1 -mt-1 rounded-md p-1 text-sky-700 transition hover:bg-sky-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700" aria-label="Dismiss notification">
+        <svg aria-hidden="true" focusable="false" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+          <path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  {% endif %}
+{% endfor %}

@@ -1,0 +1,15 @@
+{% if status == "applied" %}
+  <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">{{ status_label|default:status }}</span>
+{% elif status == "screening" %}
+  <span class="inline-flex items-center rounded-full border border-purple-200 bg-purple-50 px-2.5 py-1 text-xs font-medium text-purple-700">{{ status_label|default:status }}</span>
+{% elif status == "interview" %}
+  <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">{{ status_label|default:status }}</span>
+{% elif status == "offer" %}
+  <span class="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">{{ status_label|default:status }}</span>
+{% elif status == "hired" %}
+  <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">{{ status_label|default:status }}</span>
+{% elif status == "rejected" %}
+  <span class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700">{{ status_label|default:status }}</span>
+{% else %}
+  <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">{{ status_label|default:status }}</span>
+{% endif %}

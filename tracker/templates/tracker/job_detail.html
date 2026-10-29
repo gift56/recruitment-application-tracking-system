@@ -1,0 +1,39 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}{{ job.title }} | RecruiterHub{% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-4xl">
+    <a href="{% url 'tracker:job_list' %}" class="inline-flex rounded-lg text-sm font-medium text-indigo-700 hover:text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+      &larr; Back to Job Board
+    </a>
+
+    <article class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <header class="border-b border-slate-200 px-6 py-8 sm:px-10">
+        <p class="text-sm font-semibold text-indigo-700">{{ job.department.name }}</p>
+        <h1 class="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{{ job.title }}</h1>
+        <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
+          <span>{{ job.location }}</span>
+          {% if job.salary_range %}<span>{{ job.salary_range }}</span>{% endif %}
+        </div>
+        <a href="{% url 'tracker:application_create' pk=job.pk %}" class="mt-7 inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          Apply Now
+        </a>
+      </header>
+
+      <div class="space-y-8 px-6 py-8 sm:px-10">
+        <section aria-labelledby="job-description-title">
+          <h2 id="job-description-title" class="text-xl font-semibold text-slate-900">About the role</h2>
+          <div class="mt-3 whitespace-pre-line text-sm leading-7 text-slate-700">{{ job.description }}</div>
+        </section>
+
+        {% if job.requirements %}
+          <section aria-labelledby="job-requirements-title">
+            <h2 id="job-requirements-title" class="text-xl font-semibold text-slate-900">Requirements</h2>
+            <div class="mt-3 whitespace-pre-line text-sm leading-7 text-slate-700">{{ job.requirements }}</div>
+          </section>
+        {% endif %}
+      </div>
+    </article>
+  </div>
+{% endblock %}

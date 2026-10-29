@@ -2,7 +2,7 @@
 
 A Django-based foundation for organizing recruitment workflows, job openings, candidate records, applications, and interview feedback.
 
-> **Project status:** In active development. The core data models and Django admin are available. The public job board, candidate application flow, role-specific dashboards, and analytics are planned and are not implemented yet.
+> **Project status:** In active development. The core data models, Django admin, public job board, and candidate application flow are available. Role-specific dashboards and analytics are planned and are not implemented yet.
 
 ## What the project is about
 
@@ -20,17 +20,18 @@ The system is being developed with a focus on clear Django app structure, explic
 - **Interview feedback:** Interview notes are linked to applications and include an interviewer, a 1–5 rating, notes, and scheduled time.
 - **Django admin:** All tracker models are registered with useful list views, filters, and search. Application stages have color-coded badges, and interview notes can be edited inline on an application.
 - **Resume validation:** Candidate resumes are restricted to PDF and DOCX files, limited to 5 MiB, and checked for expected document content.
-- **Automated tests:** The tracker test suite covers model behavior, validation, admin registrations, status badges, and interview-note inline configuration.
+- **Public home page:** The site root (`/`) shows a recruitment hero, job search, and the four newest active openings. The same page is available at `/tracker/`.
+- **Public job board:** `/jobs/` lists active job postings with title/location search, department filters, and pagination; active job details include role requirements and application links.
+- **Candidate applications:** Candidates can submit their contact details, optional resume and portfolio URL, and cover letter for active jobs. Resume uploads retain PDF/DOCX, 5 MiB, and document-content validation.
+- **Automated tests:** The tracker test suite covers model behavior, validation, admin registrations, templates, public job filtering and details, application submissions, and URL behavior.
 
-There is currently no public job board, candidate-facing application submission form, recruiter dashboard, or analytics page. The `/tracker/` URL namespace is mounted but has no application endpoints yet.
+Public pages expose active job information only; candidate records, applications, and uploaded resume contents are not displayed. There is currently no recruiter dashboard or analytics page.
 
 ## Planned product work
 
 The following are goals for future development, not current features:
 
 - Authentication roles for recruiters, hiring managers, and candidates, with appropriate access controls.
-- Public active-job listings and job detail pages.
-- Candidate application submission and resume upload forms.
 - Recruiter-facing application pipeline tools and filtering.
 - Role-specific dashboards and recruitment analytics.
 - Production-ready database, media storage, and deployment configuration.
@@ -138,10 +139,14 @@ uv run python manage.py test tracker
 ├── prompts/              # Approved implementation prompts
 ├── tracker/
 │   ├── admin.py          # Django admin registrations and configuration
+│   ├── forms.py          # Candidate application form and input validation
 │   ├── migrations/       # Database schema migrations
 │   ├── models.py         # Recruitment data models and resume validation
-│   ├── tests.py          # Model and admin tests
-│   └── urls.py           # Tracker URL namespace (currently no endpoints)
+│   ├── templates/
+│   │   └── tracker/      # Shared layout, partials, and public job-board pages
+│   ├── tests.py          # Model, admin, template, job-board, and application tests
+│   ├── urls.py           # Namespaced home, job-board, and application routes
+│   └── views.py          # Public home, job listing, detail, and application views
 ├── .env.example          # Safe local environment template
 └── manage.py             # Django management commands
 ```
@@ -157,7 +162,7 @@ This repository is intended for local development and is **not production-ready*
 - Plan private, durable media storage and access controls before handling real candidate resumes in a deployed system.
 - Keep `.env`, credentials, candidate data, and uploaded resumes out of source control.
 - Preserve and test resume extension, size, and content validation when changing file handling.
-- Apply authentication and authorization checks to any future recruiter, hiring-manager, or candidate-facing functionality.
+- Apply authentication and authorization checks to future recruiter and hiring-manager functionality. Public job browsing and candidate application submission are intentionally anonymous.
 
 ## Contributing
 

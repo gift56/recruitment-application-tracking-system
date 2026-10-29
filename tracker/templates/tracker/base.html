@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>{% block title %}RecruiterHub{% endblock %}</title>
+    {# Tailwind CDN is for the local scaffold; use compiled assets before production. #}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
+    <div class="flex min-h-screen flex-col">
+      {% include "tracker/partials/navbar.html" %}
+
+      <div class="fixed right-4 top-20 z-50 w-[calc(100%-2rem)] max-w-sm sm:right-6">
+        {% include "tracker/partials/alerts.html" %}
+      </div>
+
+      <main id="main-content" class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+        {% block content %}{% endblock %}
+      </main>
+
+      {% include "tracker/partials/footer.html" %}
+    </div>
+
+    <script>
+      document.addEventListener("click", function (event) {
+        if (!(event.target instanceof Element)) {
+          return;
+        }
+
+        const button = event.target.closest("[data-dismiss-alert]");
+        const alert = button && button.closest("[data-alert]");
+        if (alert) {
+          alert.remove();
+        }
+      });
+    </script>
+  </body>
+</html>
