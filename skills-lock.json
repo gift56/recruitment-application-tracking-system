@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "architect": {
+      "source": "officialgiftdev/giftdev-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/architect/SKILL.md",
+      "computedHash": "1f833172ff489513296480bec30408c619e75efc0b898433773357c9ac6efd8f"
+    },
+    "django-forms": {
+      "source": "waldencui/claude-code-django",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/django-forms/SKILL.md",
+      "computedHash": "315ad0f2ea34ce5e1ed492d1d88f71c37afda5c4a2f458da28409c56fd9d687f"
+    },
+    "django-models": {
+      "source": "getsentry/sentry",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/django-models/SKILL.md",
+      "computedHash": "3b7962ce13bb97e4856c8d3a657be5d1c9338b2e97a8aea83f9dcef2ef34b04e"
+    },
+    "django-views": {
+      "source": "ristemingov/django-claude-setup",
+      "sourceType": "github",
+      "skillPath": "skills/django-views/SKILL.md",
+      "computedHash": "33f6b27fe2bb3a00a1002c81b5584571edd2728670f22490436940dd6bf9e366"
+    },
+    "imprint": {
+      "source": "officialgiftdev/giftdev-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/imprint/SKILL.md",
+      "computedHash": "599c3c8ef9d97129584332206d663729b4b9a1a3ad1d68ec9b5b4ad5d4af51cf"
+    },
+    "recover": {
+      "source": "officialgiftdev/giftdev-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/recover/SKILL.md",
+      "computedHash": "9b928c32260584c2979d6194c36e21ba3c624fc99a95184009c14e8d764b3915"
+    },
+    "remember": {
+      "source": "officialgiftdev/giftdev-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/remember/SKILL.md",
+      "computedHash": "77e6e96fd7745b14bbb07bda78e3b7d0c6f62a6dc3f4f44dff86d1b26539557f"
+    },
+    "review": {
+      "source": "officialgiftdev/giftdev-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/review/SKILL.md",
+      "computedHash": "8e844766710747e8a3f62173e76b4228f8b4b1203e5db8c361bf5c7a138c5b3a"
+    }
+  }
+}
