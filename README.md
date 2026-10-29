@@ -2,7 +2,7 @@
 
 A Django-based foundation for organizing recruitment workflows, job openings, candidate records, applications, and interview feedback.
 
-> **Project status:** In active development. The core data models, Django admin, public job board, and candidate application flow are available. Role-specific dashboards and analytics are planned and are not implemented yet.
+> **Project status:** In active development. The core data models, Django admin, public job board, candidate application flow, and staff-only recruiter portal are available. Authentication roles beyond Django's `is_staff` flag and production infrastructure remain future work.
 
 ## What the project is about
 
@@ -21,19 +21,21 @@ The system is being developed with a focus on clear Django app structure, explic
 - **Django admin:** All tracker models are registered with useful list views, filters, and search. Application stages have color-coded badges, and interview notes can be edited inline on an application.
 - **Resume validation:** Candidate resumes are restricted to PDF and DOCX files, limited to 5 MiB, and checked for expected document content.
 - **Public home page:** The site root (`/`) shows a recruitment hero, job search, and the four newest active openings. The same page is available at `/tracker/`.
-- **Public job board:** `/jobs/` lists active job postings with title/location search, department filters, and pagination; active job details include role requirements and application links.
+- **Public job board:** `/jobs/` lists active job postings with title/location search, department filters, and pagination; homepage cards, job listings, and active job details show a labeled salary range (or “Not provided” for older postings with no range).
 - **Candidate applications:** Candidates can submit their contact details, optional resume and portfolio URL, and cover letter for active jobs. Resume uploads retain PDF/DOCX, 5 MiB, and document-content validation.
-- **Automated tests:** The tracker test suite covers model behavior, validation, admin registrations, templates, public job filtering and details, application submissions, and URL behavior.
+- **Recruiter portal:** Staff sign in at `/login/`; `/recruiter/` shows applicant, active-posting, interview, and hired metrics; `/recruiter/jobs/` lists all postings; and `/recruiter/jobs/create/` creates job postings with a required salary range. Recruiters can also add departments at `/recruiter/departments/create/`, edit job details/status, and delete jobs that have no applications. A job with applications cannot be deleted; mark it Inactive to retain its history.
+- **Private recruiter data:** Recruiter routes require an authenticated staff user. Resume files are delivered through a protected recruiter route rather than a public media link.
+- **Development seed data:** `uv run python manage.py seed_data` creates Engineering, Product, and Design departments, three active sample jobs, and a local test recruiter account (`recruiter` / `password123`). This fixed credential is for local development only; the command refuses to run when `DEBUG` is false.
+- **Automated tests:** The tracker test suite covers model behavior, validation, admin registrations, templates, public job filtering and details, application submissions, recruiter access and workflows, private resume delivery, seed data, and URL behavior.
 
-Public pages expose active job information only; candidate records, applications, and uploaded resume contents are not displayed. There is currently no recruiter dashboard or analytics page.
+Public pages expose active job information only; candidate records, applications, and uploaded resume contents are not displayed. Candidate and application information is available through the staff-protected recruiter portal and Django admin.
 
 ## Planned product work
 
 The following are goals for future development, not current features:
 
-- Authentication roles for recruiters, hiring managers, and candidates, with appropriate access controls.
-- Recruiter-facing application pipeline tools and filtering.
-- Role-specific dashboards and recruitment analytics.
+- Fine-grained authentication roles for recruiters, hiring managers, and candidates beyond the current `is_staff` access check.
+- Advanced pipeline filtering and additional recruitment analytics.
 - Production-ready database, media storage, and deployment configuration.
 
 ## Technology
@@ -110,13 +112,21 @@ uv run python manage.py migrate
 uv run python manage.py createsuperuser
 ```
 
+For quick local portal testing, seed sample departments, jobs, and a recruiter account:
+
+```shell
+uv run python manage.py seed_data
+```
+
+The local test account is `recruiter` / `password123`. Do not reuse this credential outside local development.
+
 ### 5. Start the development server
 
 ```shell
 uv run python manage.py runserver
 ```
 
-Open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) and sign in with the superuser account. The tracker records can be managed through Django admin.
+Open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) and sign in with the superuser account to manage tracker records through Django admin. The local test recruiter can sign in at `/login/` and use the staff portal.
 
 ## Development checks
 
@@ -142,11 +152,14 @@ uv run python manage.py test tracker
 │   ├── forms.py          # Candidate application form and input validation
 │   ├── migrations/       # Database schema migrations
 │   ├── models.py         # Recruitment data models and resume validation
+│   ├── management/
+│   │   └── commands/
+│   │       └── seed_data.py # Local development sample data command
 │   ├── templates/
-│   │   └── tracker/      # Shared layout, partials, and public job-board pages
-│   ├── tests.py          # Model, admin, template, job-board, and application tests
-│   ├── urls.py           # Namespaced home, job-board, and application routes
-│   └── views.py          # Public home, job listing, detail, and application views
+│   │   └── tracker/      # Shared layout, partials, public pages, and recruiter portal
+│   ├── tests.py          # Model, admin, public-flow, recruiter, and seed tests
+│   ├── urls.py           # Namespaced public and staff recruiter routes
+│   └── views.py          # Public job flow and staff recruiter views
 ├── .env.example          # Safe local environment template
 └── manage.py             # Django management commands
 ```
@@ -162,7 +175,8 @@ This repository is intended for local development and is **not production-ready*
 - Plan private, durable media storage and access controls before handling real candidate resumes in a deployed system.
 - Keep `.env`, credentials, candidate data, and uploaded resumes out of source control.
 - Preserve and test resume extension, size, and content validation when changing file handling.
-- Apply authentication and authorization checks to future recruiter and hiring-manager functionality. Public job browsing and candidate application submission are intentionally anonymous.
+- Recruiter pages, status changes, interview-note submission, and resume delivery require authenticated staff access. Public job browsing and candidate application submission are intentionally anonymous.
+- The fixed development seed credential is not suitable for production. The project still requires production authentication/authorization design, private durable media storage, and deployment hardening before handling real candidate data.
 
 ## Contributing
 

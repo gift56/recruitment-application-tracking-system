@@ -1,0 +1,38 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Recruiter login | RecruiterHub{% endblock %}
+
+{% block content %}
+  <section aria-labelledby="login-title" class="mx-auto mt-8 max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <p class="text-sm font-semibold uppercase tracking-wide text-indigo-600">Recruiter access</p>
+    <h1 id="login-title" class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Sign in</h1>
+    <p class="mt-2 text-sm leading-6 text-slate-600">Sign in with your recruiter account to manage applications and job postings.</p>
+
+    <form method="post" class="mt-7 space-y-5">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800" role="alert">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-800">
+            {{ field.label }}{% if field.field.required %}<span aria-hidden="true" class="text-rose-600"> *</span>{% endif %}
+          </label>
+          {% if field.help_text %}<p id="{{ field.id_for_label }}-help" class="mt-1 text-xs leading-5 text-slate-500">{{ field.help_text }}</p>{% endif %}
+          {{ field }}
+          {% if field.errors %}
+            <ul id="{{ field.id_for_label }}-errors" class="mt-2 space-y-1 text-sm text-rose-700" role="alert">
+              {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        Sign in
+      </button>
+    </form>
+  </section>
+{% endblock %}

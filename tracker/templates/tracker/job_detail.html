@@ -14,7 +14,7 @@
         <h1 class="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">{{ job.title }}</h1>
         <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
           <span>{{ job.location }}</span>
-          {% if job.salary_range %}<span>{{ job.salary_range }}</span>{% endif %}
+          <span><span class="font-medium text-slate-700">Salary range:</span> {% if job.salary_range %}{{ job.salary_range }}{% else %}Not provided{% endif %}</span>
         </div>
         <a href="{% url 'tracker:application_create' pk=job.pk %}" class="mt-7 inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           Apply Now

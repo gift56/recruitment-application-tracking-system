@@ -1,0 +1,78 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Manage jobs | RecruiterHub{% endblock %}
+
+{% block content %}
+  <header class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-indigo-600">Recruiter workspace</p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Manage jobs</h1>
+      <p class="mt-3 max-w-2xl text-base leading-7 text-slate-600">Edit job details, update posting status, or remove postings that have no applications.</p>
+    </div>
+    <div class="flex flex-col gap-3 sm:flex-row">
+      <a href="{% url 'tracker:recruiter_dashboard' %}" class="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        Dashboard
+      </a>
+      <a href="{% url 'tracker:recruiter_job_create' %}" class="inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        Create a job
+      </a>
+    </div>
+  </header>
+
+  {% if jobs %}
+    <section aria-label="Recruiter job postings" class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[800px] divide-y divide-slate-200 text-left">
+          <caption class="sr-only">All job postings with status and management actions</caption>
+          <thead class="bg-slate-50">
+            <tr>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Job</th>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Department</th>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Location</th>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Salary range</th>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Applications</th>
+              <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {% for job in jobs %}
+              <tr class="align-top">
+                <th scope="row" class="px-5 py-4 font-semibold text-slate-900">{{ job.title }}</th>
+                <td class="px-5 py-4 text-sm text-slate-700">{{ job.department.name }}</td>
+                <td class="px-5 py-4 text-sm text-slate-700">{{ job.location }}</td>
+                <td class="px-5 py-4 text-sm text-slate-700">{% if job.salary_range %}{{ job.salary_range }}{% else %}<span class="text-slate-500">Not provided</span>{% endif %}</td>
+                <td class="px-5 py-4">
+                  {% if job.status == "active" %}
+                    <span class="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">Active</span>
+                  {% else %}
+                    <span class="inline-flex rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700">Inactive</span>
+                  {% endif %}
+                </td>
+                <td class="px-5 py-4 text-sm text-slate-700">{{ job.application_count }}</td>
+                <td class="px-5 py-4">
+                  <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold">
+                    <a href="{% url 'tracker:recruiter_job_edit' pk=job.pk %}" class="rounded-sm text-indigo-700 underline decoration-indigo-300 underline-offset-2 hover:text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      Edit
+                    </a>
+                    <a href="{% url 'tracker:recruiter_job_delete' pk=job.pk %}" class="rounded-sm text-rose-700 underline decoration-rose-300 underline-offset-2 hover:text-rose-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">
+                      Delete
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% else %}
+    <section aria-labelledby="empty-jobs-title" class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+      <h2 id="empty-jobs-title" class="text-lg font-semibold text-slate-900">No job postings yet</h2>
+      <p class="mt-2 text-sm text-slate-600">Create your first posting to get started.</p>
+      <a href="{% url 'tracker:recruiter_job_create' %}" class="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        Create a job
+      </a>
+    </section>
+  {% endif %}
+{% endblock %}

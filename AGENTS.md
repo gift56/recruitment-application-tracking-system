@@ -4,9 +4,10 @@
 
 - This is a Django recruitment-tracking project. `README.md` is the source of truth for implemented capabilities and the roadmap; do not describe planned features as available.
 - The current verified stack is Python 3.12+, Django 6.1.2, `uv`, and SQLite. There is no dependency manifest or frontend build pipeline yet.
-- The `tracker` app has recruitment models, admin configuration, tests, a public job board and candidate application flow, and a home page served at `/` and `/tracker/`. The root route uses the `tracker` namespace; the `/tracker/` mount uses `tracker_app` to avoid duplicate namespace ambiguity.
-- Recruiter dashboards and account routes remain unimplemented. Do not redirect to or link to those destinations until their endpoints exist.
-- Implement only the feature requested. Do not add authentication, APIs, routes, dependencies, or production infrastructure as incidental work.
+- The `tracker` app has recruitment models, admin configuration, tests, a public job board and candidate application flow, and a home page served at `/` and `/tracker/`. It also has a staff-only recruiter portal at `/login/` and `/recruiter/`, including department creation, required-salary job creation/editing, protected job deletion, application status updates, interview notes, private resume delivery, and dashboard metrics. The root route uses the `tracker` namespace; the `/tracker/` mount uses `tracker_app` to avoid duplicate namespace ambiguity.
+- Access to recruiter pages uses Django's `is_staff` flag; there is no separate role model, recruiter registration, account profile, or logout route. Do not link to destinations that do not exist.
+- The `seed_data` management command creates local sample data and the development-only `recruiter` / `password123` account. It is guarded by `DEBUG` and must not be presented as production setup.
+- Implement only the feature requested. Do not add APIs, routes, dependencies, or production infrastructure as incidental work.
 
 ## Workflow
 
@@ -29,6 +30,7 @@ When a feature adds or changes routes or user-visible capabilities, update this 
 - UI must use semantic HTML, keyboard-accessible controls, visible focus states, responsive layouts, and Django's normal escaping. Do not mark user-controlled content safe.
 - Do not add or imply working navigation, account, logout, or policy destinations unless corresponding URL patterns exist. Do not add unrelated routes to make a presentation-only template appear functional.
 - Use Django's CSRF protection for any state-changing forms. Restricted views must enforce authentication and authorization appropriate to the feature.
+- Recruiter pages and all related writes and resume delivery require authenticated staff access. Public job browsing and candidate application submission are intentionally anonymous.
 - Keep secrets out of source control. `DJANGO_SECRET_KEY` is required through the project-root `.env` or process environment; never inspect, quote, or commit `.env` values.
 
 ## Current setup and checks
